@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask
+        image: astanil/flask:latest
+        ports:
+        - containerPort: 5000
+        envFrom:
+          - secretRef:
+              name: doppler-secret-app
