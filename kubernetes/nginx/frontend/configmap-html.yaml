@@ -1,0 +1,154 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: nginx
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Frontend Application</title>
+    </head>
+    <body>
+        <h1>Welcome to My Frontend Application</h1>
+        <p>This is a placeholder HTML page for the frontend of your Flask backend application.</p>
+    
+        <div>
+            <h2>GET Documentation</h2>
+            <button onclick="sendGetRequest()">Send GET Request to Backend</button>
+            <p id="getResponse">Hello <br> world!</p>
+        </div>
+    
+        <div>
+            <h2>Get All Students</h2>
+            <button onclick="getAllStudents()">Get All Students from Backend</button>
+            <p id="getAllStudentsResponse"></p>
+        </div>
+    
+        <div>
+            <h2>Send POST Request</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter name">
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter email">
+            <br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" placeholder="Enter age">
+            <br>
+            <label for="cellphone">Cellphone:</label>
+            <input type="tel" id="cellphone" placeholder="Enter cellphone">
+            <br>
+            <button onclick="sendPostRequest()">Send POST Request to Backend</button>
+            <p id="postResponse"></p>
+        </div>
+
+        <div>
+            <h2>Get Student by ID</h2>
+            <label for="studentId">Enter Student ID:</label>
+            <input type="number" id="studentId" placeholder="Enter student ID">
+            <br>
+            <button onclick="getStudentById()">Get Student by ID from Backend</button>
+            <p id="getStudentByIdResponse"></p>
+        </div>
+
+        <script>
+            function sendGetRequest() {
+                var url = '/api';
+    
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var data = JSON.parse(xhr.responseText);
+                            console.log(data);
+                            document.getElementById('getResponse').innerText = 'Response from backend: ' + JSON.stringify(data);
+                        } else {
+                            console.error('There was a problem with the request:', xhr.statusText);
+                            document.getElementById('getResponse').innerText = 'Error: ' + xhr.statusText;
+                        }
+                    }
+                };
+                xhr.send();
+            }
+    
+            function getAllStudents() {
+                var url = '/api/students';
+    
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var data = JSON.parse(xhr.responseText);
+                            console.log(data);
+                            document.getElementById('getAllStudentsResponse').innerText = 'All Students: ' + JSON.stringify(data);
+                        } else {
+                            console.error('There was a problem with the request:', xhr.statusText);
+                            document.getElementById('getAllStudentsResponse').innerText = 'Error: ' + xhr.statusText;
+                        }
+                    }
+                };
+                xhr.send();
+            }
+    
+            function sendPostRequest() {
+                var url = '/api/students/add';
+                var name = document.getElementById('name').value;
+                var email = document.getElementById('email').value;
+                var age = document.getElementById('age').value;
+                var cellphone = document.getElementById('cellphone').value;
+    
+                var data = {
+                    name: name,
+                    email: email,
+                    age: age,
+                    cellphone: cellphone
+                };
+    
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 201) {
+                            var responseData = JSON.parse(xhr.responseText);
+                            console.log(responseData);
+                            document.getElementById('postResponse').innerText = 'Response from backend: ' + JSON.stringify(responseData);
+                        } else {
+                            console.error('There was a problem with the request:', xhr.statusText);
+                            document.getElementById('postResponse').innerText = 'Error: ' + xhr.statusText;
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify(data));
+            }
+
+            function getStudentById() {
+                var studentId = document.getElementById('studentId').value;
+                var url = '/api/students/get/' + studentId;
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var data = JSON.parse(xhr.responseText);
+                            console.log(data);
+                            document.getElementById('getStudentByIdResponse').innerText = 'Student Info: ' + JSON.stringify(data);
+                        } else {
+                            console.error('There was a problem with the request:', xhr.statusText);
+                            document.getElementById('getStudentByIdResponse').innerText = 'Error: ' + xhr.statusText;
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        </script>
+    </body>
+    </html>
+    

@@ -8,6 +8,5 @@ spec:
     app: flask-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: ClusterIP
+      port: 5000
+  type: LoadBalancer

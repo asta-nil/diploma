@@ -1,0 +1,20 @@
+controller:
+  allowSnippetAnnotations: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: monitoring
+  opentelemetry:
+    enabled: true
+  containerSecurityContext:
+    readOnlyRootFilesystem: false
+    runAsUser: 101

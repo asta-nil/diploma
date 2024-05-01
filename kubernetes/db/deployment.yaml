@@ -17,6 +17,13 @@ spec:
       containers:
       - image: mysql:latest
         name: mysql
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: '0.5'
+          limits:
+            memory: "1024Mi"
+            cpu: '1'
         envFrom:
           - secretRef:
               name: doppler-secret-db

@@ -24,6 +24,27 @@ kube-state-metrics:
 prometheus:
   retention: 3d
   prometheusSpec:
+    additionalScrapeConfigs:
+       - job_name: 'kubernetes-metrics'
+         kubernetes_sd_configs:
+           - role: endpoints
+         relabel_configs:
+           - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+             action: keep
+             regex: metrics-server;https
+           - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_namespace]
+             action: replace
+             target_label: kubernetes_namespace
+           - source_labels: [__meta_kubernetes_service_name]
+             action: replace
+             target_label: kubernetes_name
+         metrics_path: /metrics
+         scheme: https
+         honor_labels: true
+         tls_config:
+           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+           insecure_skip_verify: true
+         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -31,26 +52,3 @@ prometheus:
           resources:
             requests:
               storage: 5Gi
-
-kubeApiServer:
-  enabled: true
-kubelet:
-  enabled: true
-  serviceMonitor:
-    https: false
-kubeControllerManager:
-  enabled: true
-coreDns:
-  enabled: true
-kubeDns:
-  enabled: false
-kubeEtcd:
-  enabled: true
-kubeScheduler:
-  enabled: true
-kubeProxy:
-  enabled: true
-kubeStateMetrics:
-  enabled: true
-nodeExporter:
-  enabled: true

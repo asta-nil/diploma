@@ -6,4 +6,5 @@ resources:
   - db/
   - doppler/
   - monitoring/prometheus-grafana/dashboards/
+  - nginx/frontend
   
